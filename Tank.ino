@@ -21,7 +21,6 @@ int OUT2 = 6; // right motor bwd
 int OUT3 = 9; // left motor fwd
 int OUT4 = 10;// left motor bwd
 
-
 typedef struct package Package;
 Package data;
 
@@ -43,7 +42,6 @@ void setup()
   pinMode(echo,INPUT);
   pinMode(ledPin,OUTPUT);
   pinMode(pResistor,INPUT);
-  Serial.begin(9600);
   Serial.begin(115200);
   delay(1000);
 
@@ -64,7 +62,6 @@ void setup()
   
   analogWrite(ledPin,0);
 }
-
 
 void loop()  
 {
@@ -92,51 +89,71 @@ void loop()
     int backward = map(X,500,0,0,255);
     int right = map(Y,524,1024,0,255);
     int left = map(Y,500,0,0,255);
-    if(X > 524 && Y < 524 && Y > 500){
+    digitalWrite(trig, LOW);
+    digitalWrite(trig, HIGH);
+    digitalWrite(trig, LOW);
+    duration = pulseIn(echo, HIGH);
+    distance = duration*0.034/2;
+    if(X > 524 && Y < 524 && Y > 500 && distance > 15){
       analogWrite(OUT3, foward);
       analogWrite(OUT4, 0);
       analogWrite(OUT1, foward);
       analogWrite(OUT2, 0);
-    }else if(X < 500 && Y < 524 && Y > 500){
+    }else if(X < 500 && Y < 524 && Y > 500 && distance > 15){
       analogWrite(OUT4, backward);
       analogWrite(OUT3, 0);
       analogWrite(OUT2, backward);
       analogWrite(OUT1, 0);
-    }else if(X < 524 && X > 500 && Y < 524 && Y > 500){
+    }else if(X < 524 && X > 500 && Y < 524 && Y > 500 distance > 15){
       analogWrite(OUT4, 0);
       analogWrite(OUT3, 0);
       analogWrite(OUT2, 0);
       analogWrite(OUT1, 0);
-    }else if(X < 524 && X > 500 && Y > 524){
+    }else if(X < 524 && X > 500 && Y > 524 && distance > 15){
       analogWrite(OUT4, 0);
       analogWrite(OUT3, left);
       analogWrite(OUT2, left);
       analogWrite(OUT1, 0);
-    }else if(X < 524 && X > 500 && Y < 500){
+    }else if(X < 524 && X > 500 && Y < 500 && distance > 15){
       analogWrite(OUT4, right);
       analogWrite(OUT3, 0);
       analogWrite(OUT2, 0);
       analogWrite(OUT1, right);
-    }else if(X > 524 && Y > 524){
+    }else if(X > 524 && Y > 524 && distance > 15){
       analogWrite(OUT3, foward);
       analogWrite(OUT4, 0);
       analogWrite(OUT1, foward-right);
       analogWrite(OUT2, 0);
-    }else if(X > 524 && Y < 500){
+    }else if(X > 524 && Y < 500 && distance > 15){
       analogWrite(OUT3, foward-left);
       analogWrite(OUT4, 0);
       analogWrite(OUT1, foward);
       analogWrite(OUT2, 0);
-    }else if(X < 500 && Y > 524){
+    }else if(X < 500 && Y > 524 && distance > 15){
       analogWrite(OUT4, backward);
       analogWrite(OUT3, 0);
       analogWrite(OUT2, backward-right);
       analogWrite(OUT1, 0);
-    }else if(X < 500 && Y < 500){
+    }else if(X < 500 && Y < 500 && distance > 15){
       analogWrite(OUT4, backward-left);
       analogWrite(OUT3, 0);
       analogWrite(OUT2, backward);
       analogWrite(OUT1, 0);
+    }else if(distance < 15){ // Safety Mechanism
+      analogWrite(OUT1, 0);
+      analogWrite(OUT2, 0);
+      analogWrite(OUT3, 0);
+      analogWrite(OUT4, 0);
+    }else if(X < 524 && X > 500 && Y > 524 && distance > 15){
+      analogWrite(OUT1, 0);
+      analogWrite(OUT2, 180);
+      analogWrite(OUT3, 180);
+      analogWrite(OUT4, 0);
+    }else if(X < 524 && X > 500 && Y < 500 && distance > 15){
+      analogWrite(OUT1, 180);
+      analogWrite(OUT2, 0);
+      analogWrite(OUT3, 0);
+      analogWrite(OUT4, 180);
     }
   }
 }
